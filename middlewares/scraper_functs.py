@@ -41,7 +41,12 @@ def eliminate_popup(driver,wait):
         pass
 
 
-
+def scrolling(driver,element):
+            #first move to the element
+        driver.execute_script("return arguments[0].scrollIntoView(true);", element)
+        #then scroll by x, y values, in this case 10 pixels up
+        driver.execute_script("window.scrollBy(0, 1);")
+        
 
  
 def login(driver) -> None:
@@ -161,63 +166,32 @@ def runner(data_Source:pd.DataFrame,
 def data_gatter_jobs(driver:webdriver,
                     url:str,
                     data_dict:dict,
-                    company:str,
-                    index:int) -> None:
+                    ) -> None:
     
 
   
     # Catch Job Lists
     try:
-        jobs_lists=driver.find_elements(By.XPATH,'//li[contains(@class,"ember-view   jobs-search-results__list-item occludable-update")]')
-        time.sleep(3*random.random())
-        for job in jobs_lists:
-            time.sleep(1)
-            job.click()
-            # Create a Funcion to get the job details
-            job_title=driver.find_element(By.XPATH,'//h2[contains(@class,"unified-top-card__job-title")]').text
-            job_details=driver.find_element(By.XPATH,'//div[contains(@class,"job-details-jobs-unified-top-card__primary-description")]').text
-            element=driver.find_element(By.XPATH,'//div[contains(@class,"jobs-description__content jobs-description-content")]')
+      
+        # Create a Funcion to get the job details
+        job_title=driver.find_element(By.XPATH,'//h2[contains(@class,"unified-top-card__job-title")]').text
+        job_details=driver.find_element(By.XPATH,'//div[contains(@class,"job-details-jobs-unified-top-card__primary-description")]').text
+        job_description=driver.find_element(By.XPATH,'//div[contains(@class,"jobs-description__content jobs-description-content")]').text
 
-            # Get the innerHTML of the element
-            html_content = element.get_attribute("innerHTML")
 
-            # Function to format the HTML content
-            def format_html(html):
-                # Replace <li> and <p> tags with newline characters
-                html = html.replace('<li>', '\n').replace('</li>', '')
-                html = html.replace('<p>', '\n').replace('</p>', '')
-                # Remove other HTML tags and decode HTML entities
-               
-                return BeautifulSoup(html, "html.parser").get_text()
-
-            # Format the HTML content and print
-            job_description = format_html(html_content)
-            
-            try:
-                job_skills_list=driver.find_elements(By.XPATH,'//article//ul//li')
-                job_skills=[skill.text if len(job_skills_list) else None for skill in job_skills_list ]
-            except (NoSuchElementException,StaleElementReferenceException):
-                job_skills=None
-            
-            data_dict['Index'].append(index)       
-            data_dict['Company'].append(company)
-            data_dict['Company_Web_Site'].append(url)
-            data_dict['Title'].append(job_title)
-            data_dict['job_details'].append(job_details)
-            data_dict['job_skills'].append(job_skills)
-            data_dict['Job_Description'].append(job_description)
-            data_dict['Scope'].append('Netherlands') 
+        data_dict['Company_Web_Site'].append(url)
+        data_dict['Title'].append(job_title)
+        data_dict['job_details'].append(job_details)
+        data_dict['Job_Description'].append(job_description)
+        data_dict['Scope'].append('Netherlands') 
                        
     except NoSuchElementException as e:
        
-            data_dict['Index'].append(index)
-            data_dict['Company'].append(company)
-            data_dict['Company_Web_Site'].append(url)
-            data_dict['Title'].append(None)
-            data_dict['job_details'].append(None)
-            data_dict['job_skills'].append(None)
-            data_dict['Job_Description'].append(None)
-            data_dict['Scope'].append('Netherlands')    
+        data_dict['Company_Web_Site'].append(url)
+        data_dict['Title'].append(None)
+        data_dict['job_details'].append(None)
+        data_dict['Job_Description'].append(None)
+        data_dict['Scope'].append('Netherlands')    
    
         
            
