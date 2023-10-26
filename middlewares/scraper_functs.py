@@ -174,20 +174,24 @@ def data_gatter_jobs(driver:webdriver,
     try:
       
         # Create a Funcion to get the job details
+        element=driver.find_element(By.XPATH,'//div[contains(@class,"job-details-jobs-unified-top-card__primary-description")]//a[contains(@class,"app-aware-link")]')
+        profile_url=driver.execute_script("return arguments[0].getAttribute('href')", element)
+        company_name = driver.execute_script("return arguments[0].textContent;", element)
         job_title=driver.find_element(By.XPATH,'//h2[contains(@class,"unified-top-card__job-title")]').text
         job_details=driver.find_element(By.XPATH,'//div[contains(@class,"job-details-jobs-unified-top-card__primary-description")]').text
         job_description=driver.find_element(By.XPATH,'//div[contains(@class,"jobs-description__content jobs-description-content")]').text
 
-
-        data_dict['Company_Web_Site'].append(url)
+        data_dict['Company'].append(company_name)
+        data_dict['Company_Web_Site'].append(profile_url)
         data_dict['Title'].append(job_title)
         data_dict['job_details'].append(job_details)
         data_dict['Job_Description'].append(job_description)
         data_dict['Scope'].append('Netherlands') 
                        
     except NoSuchElementException as e:
-       
-        data_dict['Company_Web_Site'].append(url)
+        
+        data_dict['Company'].append(None)
+        data_dict['Company_Web_Site'].append(None)
         data_dict['Title'].append(None)
         data_dict['job_details'].append(None)
         data_dict['Job_Description'].append(None)
